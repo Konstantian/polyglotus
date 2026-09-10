@@ -1,15 +1,15 @@
 {
-  "name": "auto-translate",
+  "name": "ai-translate",
   "version": "1.0.0",
   "description": "CLI tool for automatic AI-powered translation of JSON and Markdown files",
   "license": "MIT",
   "author": "",
   "type": "module",
   "bin": {
-    "auto-translate": "./bin/auto-translate.js"
+    "ai-translate": "./bin/ai-translate.js"
   },
   "scripts": {
-    "start": "node bin/auto-translate.js",
+    "start": "node bin/ai-translate.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

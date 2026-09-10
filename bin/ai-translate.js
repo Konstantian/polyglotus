@@ -9,7 +9,7 @@ import { runTranslation } from "../src/translate.js";
 const program = new Command();
 
 program
-  .name("auto-translate")
+  .name("ai-translate")
   .description("CLI tool for AI-powered translation of JSON and Markdown files")
   .version("1.0.0");
 
@@ -17,7 +17,7 @@ program
 
 program
   .command("translate", { isDefault: true })
-  .description("Translate files according to auto-translate.config.mjs")
+  .description("Translate files according to ai-translate.config.mjs")
   .option("-c, --config <path>", "Path to config file")
   .option("-l, --lang <codes>", "Comma-separated target language codes (overrides config)")
   .option("--chunk-size <n>", "Max JSON keys per AI request", "100")
@@ -43,7 +43,7 @@ program
 
       const targetLangs = opts.lang ? opts.lang.split(",").map((s) => s.trim()) : undefined;
 
-      console.log("Auto-Translate — AI Translation CLI\n");
+      console.log("AI-Translate — AI Translation CLI\n");
       console.log(`   Endpoint: ${displayName}`);
       console.log(`   Model:    ${model}`);
       console.log(`   Source:   ${config.sourceLang}`);
@@ -82,7 +82,7 @@ program
 
 program
   .command("init")
-  .description("Generate a starter auto-translate.config.mjs in the current directory")
+  .description("Generate a starter ai-translate.config.mjs in the current directory")
   .action(async () => {
     try {
       const dest = await writeDefaultConfig(process.cwd());

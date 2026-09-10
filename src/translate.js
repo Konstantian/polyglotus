@@ -190,7 +190,7 @@ ${content}`;
 /**
  * Run the full translation pipeline for a loaded config.
  *
- * @param {object}  config   Loaded auto-translate config
+ * @param {object}  config   Loaded ai-translate config
  * @param {object}  client   OpenAI-compatible client config ({ baseUrl, apiKey, model })
  * @param {object}  opts     CLI options (dryRun, verbose, chunkSize, targetLangs override)
  */

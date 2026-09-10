@@ -1,4 +1,4 @@
-/** @type {import('auto-translate/config').AutoTranslateConfig} */
+/** @type {import('ai-translate/config').AiTranslateConfig} */
 export default {
   sourceLang: "en",
   targetLangs: ["ru"],

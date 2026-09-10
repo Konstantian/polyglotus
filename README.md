@@ -1,4 +1,4 @@
-# Auto-Translate
+# AI-Translate
 
 CLI tool for automatic AI-powered translation of JSON and Markdown files.
 
@@ -8,9 +8,9 @@ Point it at your source files, list target languages, and it handles the rest �
 
 ```bash
 npm install
-npx auto-translate init        # creates auto-translate.config.mjs
+npx ai-translate init        # creates ai-translate.config.mjs
 # edit the config, then:
-OPENAI_API_KEY=your_key npx auto-translate translate
+OPENAI_API_KEY=your_key npx ai-translate translate
 ```
 
 ## Environment variables
@@ -21,7 +21,7 @@ OPENAI_API_KEY=your_key npx auto-translate translate
 
 API keys can also be set in the config file via `provider.apiKey`, but env vars take priority.
 
-**Dotenv support:** Auto-Translate automatically loads variables from a `.env` file in your project root, so you don't need to pass them inline:
+**Dotenv support:** AI-Translate automatically loads variables from a `.env` file in your project root, so you don't need to pass them inline:
 
 ```
 # .env
@@ -30,10 +30,10 @@ OPENAI_API_KEY=your_key
 
 ## Configuration
 
-Create an `auto-translate.config.mjs` in your project root (or run `npx auto-translate init`):
+Create an `ai-translate.config.mjs` in your project root (or run `npx ai-translate init`):
 
 ```js
-/** @type {import('auto-translate/config').AutoTranslateConfig} */
+/** @type {import('ai-translate/config').AiTranslateConfig} */
 export default {
   sourceLang: "en",
   targetLangs: ["de", "fr", "es", "ru"],
@@ -143,8 +143,8 @@ Use a local [Ollama](https://ollama.com) instance — free, no API key needed.
 ## CLI usage
 
 ```
-auto-translate translate [options]
-auto-translate init
+ai-translate translate [options]
+ai-translate init
 ```
 
 ### `translate` options
@@ -164,22 +164,22 @@ auto-translate init
 
 ```bash
 # Translate everything using OpenAI (default config)
-OPENAI_API_KEY=sk-xxx npx auto-translate translate
+OPENAI_API_KEY=sk-xxx npx ai-translate translate
 
 # Only translate to Russian and German
-npx auto-translate translate --lang ru,de
+npx ai-translate translate --lang ru,de
 
 # Use a specific OpenAI model
-OPENAI_API_KEY=sk-xxx npx auto-translate translate --model openai/gpt-5.6-luna
+OPENAI_API_KEY=sk-xxx npx ai-translate translate --model openai/gpt-5.6-luna
 
 # Use local Ollama
-npx auto-translate translate --model llama3.1 --base-url http://localhost:11434/v1
+npx ai-translate translate --model llama3.1 --base-url http://localhost:11434/v1
 
 # Dry run — see what's missing without writing anything
-npx auto-translate translate --dry-run
+npx ai-translate translate --dry-run
 
 # Smaller chunks for large files
-npx auto-translate translate --chunk-size 50 --verbose
+npx ai-translate translate --chunk-size 50 --verbose
 ```
 
 ## Features

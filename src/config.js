@@ -4,7 +4,7 @@ import { existsSync } from "fs";
 import { pathToFileURL } from "url";
 import { z } from "zod";
 
-const CONFIG_FILENAME = "auto-translate.config.mjs";
+const CONFIG_FILENAME = "ai-translate.config.mjs";
 
 const configSchema = z.object({
   sourceLang: z.string().default("en"),
@@ -35,11 +35,11 @@ const configSchema = z.object({
 });
 
 /**
- * @typedef {z.infer<typeof configSchema>} AutoTranslateConfig
+ * @typedef {z.infer<typeof configSchema>} AiTranslateConfig
  */
 
 /**
- * Searches for auto-translate.config.mjs starting from cwd up to root.
+ * Searches for ai-translate.config.mjs starting from cwd up to root.
  * @param {string} startDir
  * @returns {string|null}
  */
@@ -65,7 +65,7 @@ export async function loadConfig(explicitPath) {
   if (!configPath || !existsSync(configPath)) {
     throw new Error(
       `Config file not found. Create a ${CONFIG_FILENAME} file or specify one with --config.\n` +
-        `Run "auto-translate init" to generate a starter config.`
+        `Run "ai-translate init" to generate a starter config.`
     );
   }
 
@@ -105,7 +105,7 @@ export async function writeDefaultConfig(dir) {
     throw new Error(`${CONFIG_FILENAME} already exists in ${dir}`);
   }
 
-  const content = `/** @type {import('auto-translate/config').AutoTranslateConfig} */
+  const content = `/** @type {import('ai-translate/config').AiTranslateConfig} */
 export default {
   sourceLang: "en",
   targetLangs: ["de"],
