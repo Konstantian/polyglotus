@@ -2,11 +2,20 @@
   "name": "ai-translate",
   "version": "1.0.0",
   "description": "CLI tool for automatic AI-powered translation of JSON and Markdown files",
+  "homepage": "https://github.com/Konstantian/ai-translate#readme",
+  "bugs": {
+    "url": "https://github.com/Konstantian/ai-translate/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Konstantian/ai-translate.git"
+  },
   "license": "MIT",
   "author": "konstantian",
   "type": "module",
+  "main": "index.js",
   "bin": {
-    "ai-translate": "./bin/ai-translate.js"
+    "ai-translate": "bin/ai-translate.js"
   },
   "scripts": {
     "start": "node bin/ai-translate.js",
@@ -18,5 +27,6 @@
     "flat": "^6.0.1",
     "glob": "^13.0.6",
     "zod": "^4.3.6"
-  }
+  },
+  "devDependencies": {}
 }
