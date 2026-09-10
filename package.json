@@ -2,23 +2,23 @@
   "name": "polyglotus",
   "version": "1.0.0",
   "description": "CLI tool for automatic AI-powered translation of JSON and Markdown files",
-  "homepage": "https://github.com/Konstantian/ai-translate#readme",
+  "homepage": "https://github.com/Konstantian/polyglotus#readme",
   "bugs": {
-    "url": "https://github.com/Konstantian/ai-translate/issues"
+    "url": "https://github.com/Konstantian/polyglotus/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Konstantian/ai-translate.git"
+    "url": "git+https://github.com/Konstantian/polyglotus.git"
   },
   "license": "MIT",
   "author": "konstantian",
   "type": "module",
   "main": "index.js",
   "bin": {
-    "ai-translate": "bin/ai-translate.js"
+    "polyglotus": "bin/polyglotus.js"
   },
   "scripts": {
-    "start": "node bin/ai-translate.js",
+    "start": "node bin/polyglotus.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

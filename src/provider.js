@@ -15,7 +15,7 @@ const DEFAULT_API_KEY_ENV = "OPENAI_API_KEY";
  * for any other endpoint a missing key is assumed to be intentional
  * (e.g. an unauthenticated local server).
  *
- * @param {object} providerConfig  The "provider" block from ai-translate.config.mjs
+ * @param {object} providerConfig  The "provider" block from polyglotus.config.mjs
  * @param {object} cliOverrides    CLI flags that override config values
  * @returns {{ baseUrl: string, apiKey: string|null, model: string, displayName: string }}
  */
