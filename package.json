@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "CLI tool for automatic AI-powered translation of JSON and Markdown files",
   "license": "MIT",
-  "author": "",
+  "author": "konstantian",
   "type": "module",
   "bin": {
     "ai-translate": "./bin/ai-translate.js"
