@@ -1,5 +1,5 @@
 {
-  "name": "llm-translate",
+  "name": "polyglotus",
   "version": "1.0.0",
   "description": "CLI tool for automatic AI-powered translation of JSON and Markdown files",
   "homepage": "https://github.com/Konstantian/ai-translate#readme",
