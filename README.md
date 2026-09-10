@@ -1,0 +1,196 @@
+# Auto-Translate
+
+CLI tool for automatic AI-powered translation of JSON and Markdown files.
+
+Point it at your source files, list target languages, and it handles the rest — chunking large JSON, merging missing keys into existing translations, and creating markdown translations.
+
+## Quick start
+
+```bash
+npm install
+npx auto-translate init        # creates auto-translate.config.mjs
+# edit the config, then:
+OPENAI_API_KEY=your_key npx auto-translate translate
+```
+
+## Environment variables
+
+| Variable | Description |
+|---|---|
+| `OPENAI_API_KEY` | OpenAI API key (for `openai` provider) |
+
+API keys can also be set in the config file via `provider.apiKey`, but env vars take priority.
+
+**Dotenv support:** Auto-Translate automatically loads variables from a `.env` file in your project root, so you don't need to pass them inline:
+
+```
+# .env
+OPENAI_API_KEY=your_key
+```
+
+## Configuration
+
+Create an `auto-translate.config.mjs` in your project root (or run `npx auto-translate init`):
+
+```js
+/** @type {import('auto-translate/config').AutoTranslateConfig} */
+export default {
+  sourceLang: "en",
+  targetLangs: ["de", "fr", "es", "ru"],
+
+  provider: {
+    model: "openai/gpt-5.6-luna",
+  },
+
+  files: [
+    {
+      pattern: "messages/en.json",
+      type: "json",
+    },
+    {
+      pattern: "docs/readme.md",
+      type: "markdown",
+    },
+  ],
+
+  prompts: {
+    json: "Custom context prompt for JSON translation…",
+    markdown: "Custom context prompt for Markdown translation…",
+  },
+};
+```
+
+### Provider configuration
+
+The `provider` block talks to any endpoint implementing the OpenAI-compatible
+Chat Completions API — OpenAI, Ollama, LM Studio, OpenRouter, self-hosted,
+etc. By default it targets the official OpenAI API; set `baseUrl` to point
+anywhere else.
+
+```js
+provider: {
+  model: "model-id",
+  baseUrl: "optional-custom-url", // defaults to https://api.openai.com/v1
+  apiKey: "optional-key-here",
+  apiKeyEnv: "OPENAI_API_KEY", // optional: env var name to read the key from
+}
+```
+
+| Field | Default | Description |
+|---|---|---|
+| `model` | — | Model identifier |
+| `baseUrl` | `https://api.openai.com/v1` | API endpoint base URL |
+| `apiKey` | — | API key (env var is preferred, this is a fallback) |
+| `apiKeyEnv` | `OPENAI_API_KEY` | Name of the env var to read the API key from |
+
+A missing API key only raises an error when `baseUrl` is the default OpenAI
+endpoint. For any other endpoint (local Ollama, self-hosted servers, etc.)
+a missing key is assumed to be intentional — set `apiKeyEnv` or `apiKey` if
+your endpoint requires one.
+
+#### OpenAI (default)
+
+```json
+"provider": {
+  "model": "openai/gpt-5.6-luna"
+}
+```
+Env var: `OPENAI_API_KEY`.
+
+#### Ollama (local)
+
+Use a local [Ollama](https://ollama.com) instance — free, no API key needed.
+
+```json
+"provider": {
+  "model": "llama3.1",
+  "baseUrl": "http://localhost:11434/v1"
+}
+```
+
+#### Any other OpenAI-compatible endpoint
+
+```json
+"provider": {
+  "model": "model-id",
+  "baseUrl": "https://your-endpoint/v1",
+  "apiKey": "optional-key-here",
+  "apiKeyEnv": "MY_CUSTOM_API_KEY"
+}
+```
+
+### Other config fields
+
+| Field | Required | Description |
+|---|---|---|
+| `sourceLang` | yes | Source language code (e.g. `"en"`) |
+| `targetLangs` | yes | Array of target language codes |
+| `files` | yes | Array of file entries to translate |
+| `files[].pattern` | yes | Glob pattern for source files (resolved relative to config) |
+| `files[].type` | yes | `"json"` or `"markdown"` |
+| `files[].prompt` | no | Override the default prompt for this specific file pattern |
+| `prompts.json` | no | Default context prompt prepended to all JSON translation requests |
+| `prompts.markdown` | no | Default context prompt prepended to all Markdown translation requests |
+
+### How file naming works
+
+**JSON files:** The source language code in the filename is replaced with the target code.
+- `messages/en.json` → `messages/de.json`, `messages/fr.json`, …
+
+**Markdown files:** The target language code is appended before the extension.
+- `docs/readme.md` → `docs/readme-de.md`, `docs/readme-fr.md`, …
+
+## CLI usage
+
+```
+auto-translate translate [options]
+auto-translate init
+```
+
+### `translate` options
+
+| Flag | Description |
+|---|---|
+| `-c, --config <path>` | Path to config file (default: auto-detect) |
+| `-l, --lang <codes>` | Override target languages (comma-separated) |
+| `-m, --model <model>` | Override model identifier |
+| `--base-url <url>` | Override API base URL |
+| `--api-key-env <name>` | Override the env var name to read the API key from |
+| `--chunk-size <n>` | Max JSON keys per AI request (default: 100) |
+| `-d, --dry-run` | Preview what would be translated |
+| `-v, --verbose` | Detailed progress output |
+
+### Examples
+
+```bash
+# Translate everything using OpenAI (default config)
+OPENAI_API_KEY=sk-xxx npx auto-translate translate
+
+# Only translate to Russian and German
+npx auto-translate translate --lang ru,de
+
+# Use a specific OpenAI model
+OPENAI_API_KEY=sk-xxx npx auto-translate translate --model openai/gpt-5.6-luna
+
+# Use local Ollama
+npx auto-translate translate --model llama3.1 --base-url http://localhost:11434/v1
+
+# Dry run — see what's missing without writing anything
+npx auto-translate translate --dry-run
+
+# Smaller chunks for large files
+npx auto-translate translate --chunk-size 50 --verbose
+```
+
+## Features
+
+- **OpenAI-compatible** — works with OpenAI, local Ollama, or any other endpoint implementing the Chat Completions API
+- **Incremental** — only translates missing keys/files; existing translations are preserved
+- **Chunked** — large JSON files are split into manageable pieces for reliable AI output
+- **Glob patterns** — match multiple source files with a single pattern
+- **Per-file prompts** — give the AI specific context for different parts of your project
+- **Config-driven** — model, endpoint, and API key all configurable in one file
+
+## License
+
+MIT
