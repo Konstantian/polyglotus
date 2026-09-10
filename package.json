@@ -1,6 +1,6 @@
 {
   "name": "polyglotus",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "CLI tool for automatic AI-powered translation of JSON and Markdown files",
   "homepage": "https://github.com/Konstantian/polyglotus#readme",
   "bugs": {
