@@ -1,4 +1,4 @@
-export default {
+const config = {
   sourceLang: "en",
   targetLangs: ["ru"],
   provider: {
@@ -18,3 +18,5 @@ export default {
     },
   ],
 };
+
+export default config;
