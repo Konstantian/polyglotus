@@ -15,7 +15,7 @@ npx polyglotus init
 ## Quick start
 
 ```bash
-npx polyglotus init        # creates polyglotus.config.mjs
+npx polyglotus init
 npx polyglotus translate
 ```
 
@@ -130,6 +130,7 @@ Use a local [Ollama](https://ollama.com) instance — free, no API key needed.
 |---|---|---|
 | `sourceLang` | yes | Source language code (e.g. `"en"`) |
 | `targetLangs` | yes | Array of target language codes |
+| `requestDelay` | no | Minimum delay between AI requests, in milliseconds (default: `1000`) |
 | `files` | yes | Array of file entries to translate |
 | `files[].pattern` | yes | Glob pattern for source files (resolved relative to config) |
 | `files[].type` | yes | `"json"` or `"markdown"` |
@@ -162,6 +163,7 @@ polyglotus init
 | `--base-url <url>` | Override API base URL |
 | `--api-key-env <name>` | Override the env var name to read the API key from |
 | `--chunk-size <n>` | Max JSON keys per AI request (default: 100) |
+| `--request-delay <ms>` | Minimum delay between AI requests, in milliseconds (overrides config, default: 1000) |
 | `-d, --dry-run` | Preview what would be translated |
 | `-v, --verbose` | Detailed progress output |
 
@@ -185,6 +187,9 @@ npx polyglotus translate --dry-run
 
 # Smaller chunks for large files
 npx polyglotus translate --chunk-size 50 --verbose
+
+# Wait 2 seconds between AI requests (e.g. to stay under a rate limit)
+npx polyglotus translate --request-delay 2000
 ```
 
 ## Features

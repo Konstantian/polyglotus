@@ -63,7 +63,7 @@ function targetPath(sourcePath, sourceLang, targetLang, targetFormat) {
 
 // ── JSON translation ─────────────────────────────────────────────────────────
 
-async function translateJsonChunk(chunk, sourceLang, targetLang, client, contextPrompt, verbose) {
+async function translateJsonChunk(chunk, sourceLang, targetLang, client, contextPrompt, verbose, requestDelay) {
   const keyCount = Object.keys(chunk).length;
   if (verbose) console.log(`    Translating ${keyCount} JSON keys...`);
 
@@ -73,6 +73,7 @@ Output ONLY valid JSON. No explanation, no code fences.
 
 ${JSON.stringify(chunk, null, 2)}`;
 
+  await throttleRequest(requestDelay);
   const result = await generateText({ ...client, prompt, temperature: 0.3 });
 
   let text = result.text.trim();
@@ -96,7 +97,7 @@ ${JSON.stringify(chunk, null, 2)}`;
 /**
  * Translate a full JSON file (handles chunking internally).
  */
-async function translateJsonFile(sourcePath, destPath, sourceLang, targetLang, client, contextPrompt, chunkSize, verbose, logHeader) {
+async function translateJsonFile(sourcePath, destPath, sourceLang, targetLang, client, contextPrompt, chunkSize, verbose, logHeader, requestDelay) {
   const sourceContent = await fs.readFile(sourcePath, "utf-8");
   const sourceJson = JSON.parse(sourceContent);
   const flatSource = flatten(sourceJson);
@@ -133,9 +134,8 @@ async function translateJsonFile(sourcePath, destPath, sourceLang, targetLang, c
 
   for (let i = 0; i < chunks.length; i++) {
     if (chunks.length > 1) console.log(`    chunk ${i + 1}/${chunks.length}`);
-    const translated = await translateJsonChunk(chunks[i], sourceLang, targetLang, client, contextPrompt, verbose);
+    const translated = await translateJsonChunk(chunks[i], sourceLang, targetLang, client, contextPrompt, verbose, requestDelay);
     translatedChunks.push(translated);
-    if (i < chunks.length - 1) await sleep(500);
   }
 
   const mergedFlat = Object.assign({}, ...translatedChunks);
@@ -156,7 +156,7 @@ async function translateJsonFile(sourcePath, destPath, sourceLang, targetLang, c
 
 // ── Markdown translation ─────────────────────────────────────────────────────
 
-async function translateMarkdownFile(sourcePath, destPath, sourceLang, targetLang, client, contextPrompt, verbose, logHeader) {
+async function translateMarkdownFile(sourcePath, destPath, sourceLang, targetLang, client, contextPrompt, verbose, logHeader, requestDelay) {
   if (existsSync(destPath)) {
     if (verbose) {
       logHeader();
@@ -176,6 +176,7 @@ Output ONLY the translated markdown. No explanation, no wrapping.
 
 ${content}`;
 
+  await throttleRequest(requestDelay);
   const result = await generateText({ ...client, prompt, temperature: 0.3 });
   const translated = result.text.trim();
 
@@ -199,6 +200,7 @@ export async function runTranslation(config, client, opts = {}) {
     dryRun = false,
     verbose = false,
     chunkSize = 100,
+    requestDelay = 1000,
     targetLangs,
   } = opts;
 
@@ -246,14 +248,14 @@ export async function runTranslation(config, client, opts = {}) {
 
         try {
           if (type === "json") {
-            const result = await translateJsonFile(srcFile, dest, sourceLang, lang, client, contextPrompt, chunkSize, verbose, logHeader);
+            const result = await translateJsonFile(srcFile, dest, sourceLang, lang, client, contextPrompt, chunkSize, verbose, logHeader, requestDelay);
             if (result.skipped) {
               totalSkipped++;
             } else {
               totalSuccess++;
             }
           } else {
-            const result = await translateMarkdownFile(srcFile, dest, sourceLang, lang, client, contextPrompt, verbose, logHeader);
+            const result = await translateMarkdownFile(srcFile, dest, sourceLang, lang, client, contextPrompt, verbose, logHeader, requestDelay);
             if (result.skipped) {
               totalSkipped++;
             } else {
@@ -276,6 +278,18 @@ export async function runTranslation(config, client, opts = {}) {
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+// Tracks the timestamp of the last API request so we can enforce a minimum
+// delay between any two requests, regardless of which file/language/chunk
+// they belong to.
+let lastRequestAt = 0;
+
+async function throttleRequest(requestDelay) {
+  if (!requestDelay) return;
+  const wait = lastRequestAt + requestDelay - Date.now();
+  if (wait > 0) await sleep(wait);
+  lastRequestAt = Date.now();
 }
 
 function deepMerge(target, source) {

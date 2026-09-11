@@ -21,6 +21,7 @@ program
   .option("-c, --config <path>", "Path to config file")
   .option("-l, --lang <codes>", "Comma-separated target language codes (overrides config)")
   .option("--chunk-size <n>", "Max JSON keys per AI request", "100")
+  .option("--request-delay <ms>", "Minimum delay between AI requests, in milliseconds (overrides config, default: 1000)")
   .option("-d, --dry-run", "Show what would be done without writing files")
   .option("-v, --verbose", "Show detailed progress")
   .option("-m, --model <model>", "Model identifier (overrides config)")
@@ -43,6 +44,9 @@ program
 
       const targetLangs = opts.lang ? opts.lang.split(",").map((s) => s.trim()) : undefined;
 
+      const requestDelay =
+        opts.requestDelay !== undefined ? parseInt(opts.requestDelay, 10) : (config.requestDelay ?? 1000);
+
       console.log("Polyglotus — AI Translation CLI\n");
       console.log(`   Endpoint: ${displayName}`);
       console.log(`   Model:    ${model}`);
@@ -56,6 +60,7 @@ program
         dryRun: opts.dryRun,
         verbose: opts.verbose,
         chunkSize: parseInt(opts.chunkSize, 10),
+        requestDelay,
         targetLangs,
       });
 

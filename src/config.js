@@ -9,6 +9,7 @@ const CONFIG_FILENAME = "polyglotus.config.mjs";
 const configSchema = z.object({
   sourceLang: z.string().default("en"),
   targetLangs: z.array(z.string()).min(1, "Config must specify at least one targetLangs entry."),
+  requestDelay: z.number().nonnegative().optional(),
   provider: z.object({
     model: z.string({ required_error: "Config must specify provider.model." }),
     apiKey: z.string().optional(),
