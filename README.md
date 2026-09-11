@@ -6,7 +6,7 @@ Point it at your source files, list target languages, and it handles the rest â€
 
 ## Installation
 
-You can also skip installation and run it directly with `npx`:
+You can skip installation and run it directly with `npx`:
 
 ```bash
 npx polyglotus init
