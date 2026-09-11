@@ -4,13 +4,19 @@ CLI tool for automatic AI-powered translation of JSON and Markdown files.
 
 Point it at your source files, list target languages, and it handles the rest — chunking large JSON, merging missing keys into existing translations, and creating markdown translations.
 
+## Installation
+
+You can also skip installation and run it directly with `npx`:
+
+```bash
+npx polyglotus init
+```
+
 ## Quick start
 
 ```bash
-npm install
 npx polyglotus init        # creates polyglotus.config.mjs
-# edit the config, then:
-OPENAI_API_KEY=your_key npx polyglotus translate
+npx polyglotus translate
 ```
 
 ## Environment variables
@@ -33,7 +39,6 @@ OPENAI_API_KEY=your_key
 Create an `polyglotus.config.mjs` in your project root (or run `npx polyglotus init`):
 
 ```js
-/** @type {import('polyglotus/config').PolyglotusConfig} */
 export default {
   sourceLang: "en",
   targetLangs: ["de", "fr", "es", "ru"],
@@ -184,12 +189,12 @@ npx polyglotus translate --chunk-size 50 --verbose
 
 ## Features
 
-- **OpenAI-compatible** — works with OpenAI, local Ollama, or any other endpoint implementing the Chat Completions API
-- **Incremental** — only translates missing keys/files; existing translations are preserved
-- **Chunked** — large JSON files are split into manageable pieces for reliable AI output
-- **Glob patterns** — match multiple source files with a single pattern
-- **Per-file prompts** — give the AI specific context for different parts of your project
-- **Config-driven** — model, endpoint, and API key all configurable in one file
+- **OpenAI-compatible** - works with OpenAI, local Ollama, or any other endpoint implementing the Chat Completions API
+- **Incremental** - only translates missing keys/files; existing translations are preserved
+- **Chunked** - large JSON files are split into manageable pieces for reliable AI output
+- **Glob patterns** - match multiple source files with a single pattern
+- **Per-file prompts** - give the AI specific context for different parts of your project
+- **Config-driven** - model, endpoint, and API key all configurable in one file
 
 ## License
 

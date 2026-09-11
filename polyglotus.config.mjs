@@ -1,4 +1,3 @@
-/** @type {import('polyglotus/config').PolyglotusConfig} */
 export default {
   sourceLang: "en",
   targetLangs: ["ru"],
