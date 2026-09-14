@@ -6,6 +6,8 @@ Point it at your source files, list target languages, and it handles the rest â€
 
 ## Installation
 
+The package is published on npm: [polyglotus](https://www.npmjs.com/package/polyglotus).
+
 You can skip installation and run it directly with `npx`:
 
 ```bash
