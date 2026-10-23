@@ -115,6 +115,8 @@ Use a local [Ollama](https://ollama.com) instance — free, no API key needed.
 }
 ```
 
+Local servers often handle only a few requests at a time (see `OLLAMA_NUM_PARALLEL`) and queue the rest. If requests start timing out, lower `concurrency`.
+
 #### Any other OpenAI-compatible endpoint
 
 ```json
@@ -132,13 +134,22 @@ Use a local [Ollama](https://ollama.com) instance — free, no API key needed.
 |---|---|---|
 | `sourceLang` | yes | Source language code (e.g. `"en"`) |
 | `targetLangs` | yes | Array of target language codes |
-| `requestDelay` | no | Minimum delay between AI requests, in milliseconds (default: `1000`) |
+| `requestDelay` | no | Minimum delay between starting AI requests, in milliseconds, also when they run in parallel (default: `1000`) |
+| `concurrency` | no | Max number of AI requests running in parallel (default: `4`) |
 | `files` | yes | Array of file entries to translate |
 | `files[].pattern` | yes | Glob pattern for source files (resolved relative to config) |
 | `files[].type` | yes | `"json"` or `"markdown"` |
 | `files[].prompt` | no | Override the default prompt for this specific file pattern |
 | `prompts.json` | no | Default context prompt prepended to all JSON translation requests |
 | `prompts.markdown` | no | Default context prompt prepended to all Markdown translation requests |
+
+### Parallel translation and progress
+
+Polyglotus runs several AI requests at the same time: files, target languages, and the chunks of a large JSON file are all translated in parallel. `concurrency` caps how many requests are in flight at once, and `requestDelay` still spaces out when new ones start.
+
+In an interactive terminal you get a live view of every request in flight, plus a progress bar with an estimate of the time left. In CI or when the output is piped, a line is printed as each file (and each chunk of a large JSON file) finishes.
+
+If some chunks of a JSON file fail, the ones that succeeded are still saved, so running the command again only retries the missing keys. If your provider responds with `429 Too Many Requests`, lower `concurrency` or raise `requestDelay`.
 
 ### How file naming works
 
@@ -165,7 +176,8 @@ polyglotus init
 | `--base-url <url>` | Override API base URL |
 | `--api-key-env <name>` | Override the env var name to read the API key from |
 | `--chunk-size <n>` | Max JSON keys per AI request (default: 100) |
-| `--request-delay <ms>` | Minimum delay between AI requests, in milliseconds (overrides config, default: 1000) |
+| `--request-delay <ms>` | Minimum delay between starting AI requests, in milliseconds (overrides config, default: 1000) |
+| `-j, --concurrency <n>` | Max number of AI requests running in parallel (overrides config, default: 4) |
 | `-d, --dry-run` | Preview what would be translated |
 | `-v, --verbose` | Detailed progress output |
 
@@ -192,6 +204,9 @@ npx polyglotus translate --chunk-size 50 --verbose
 
 # Wait 2 seconds between AI requests (e.g. to stay under a rate limit)
 npx polyglotus translate --request-delay 2000
+
+# Run up to 8 AI requests in parallel
+npx polyglotus translate --concurrency 8
 ```
 
 ## Features
@@ -199,6 +214,7 @@ npx polyglotus translate --request-delay 2000
 - **OpenAI-compatible** - works with OpenAI, local Ollama, or any other endpoint implementing the Chat Completions API
 - **Incremental** - only translates missing keys/files; existing translations are preserved
 - **Chunked** - large JSON files are split into manageable pieces for reliable AI output
+- **Parallel** - several files, languages, and chunks are translated at once, with a live progress display
 - **Glob patterns** - match multiple source files with a single pattern
 - **Per-file prompts** - give the AI specific context for different parts of your project
 - **Config-driven** - model, endpoint, and API key all configurable in one file
